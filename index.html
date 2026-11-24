@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SpendWise – Smart Student Expense Tracker</title>
+<style>
+:root{--bg:#f4f6f5;--card:#fff;--tx:#14201b;--mu:#66756e;--bd:#e3e9e6;--pr:#059669;--rd:#dc2626;--am:#d97706;--sh:0 1px 3px rgba(20,32,27,.08);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1512;--card:#17211d;--tx:#e8efec;--mu:#93a39b;--bd:#27342e;--pr:#34d399;--rd:#f87171;--am:#fbbf24}}
+:root[data-theme=dark]{--bg:#0e1512;--card:#17211d;--tx:#e8efec;--mu:#93a39b;--bd:#27342e;--pr:#34d399;--rd:#f87171;--am:#fbbf24}
+html,body{height:auto}*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+#app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+aside{padding:20px 14px;border-right:1px solid var(--bd);background:var(--card);position:sticky;top:0;height:100vh}
+.logo{font-weight:700;font-size:20px;margin:0 8px 18px;color:var(--pr)}
+#nav a{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;color:var(--mu);text-decoration:none;font-weight:500;margin-bottom:2px;transition:.15s}
+#nav a:hover{background:var(--bg)}#nav a.on{background:var(--pr);color:#fff}
+main{padding:20px;max-width:1120px;width:100%;min-width:0}
+header{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+h1{font-size:24px;margin:0}h2{font-size:17px;margin:0 0 12px}h3{margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;box-shadow:var(--sh);min-width:0}
+.grid{display:grid;gap:14px;margin-bottom:14px}.g5{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.mu{color:var(--mu);font-size:14px}.big{font-size:24px;font-weight:700}
+.g{color:var(--pr)}.r{color:var(--rd)}.a{color:var(--am)}
+button,input,select,textarea{font:inherit;color:var(--tx)}
+.b1,.b2{border-radius:10px;padding:9px 16px;cursor:pointer;border:1px solid var(--pr);transition:.15s;font-weight:600}
+.b1{background:var(--pr);color:#fff}.b1:hover{opacity:.88}.b2{background:transparent;color:var(--pr)}.b2:hover{background:var(--bg)}
+.sm{padding:4px 10px;font-size:14px}.dl{color:var(--rd);border-color:var(--rd)}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg)}
+label{display:block;font-size:14px;color:var(--mu);margin-bottom:10px}label input,label select,label textarea{margin-top:4px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
+.filt{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.filt label{margin:0}
+.tr{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}.tr:last-child{border:0}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}.tr .n{flex:1;min-width:0}.tr .n b{display:block;overflow:hidden;text-overflow:ellipsis}
+.bar{height:10px;background:var(--bg);border-radius:9px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;border-radius:9px;transition:width .5s}
+.ok i{background:var(--pr)}.warn i{background:var(--am)}.bad i{background:var(--rd)}
+.ins{padding:10px 12px;border-radius:12px;margin-bottom:8px;background:var(--bg);border-left:4px solid var(--mu)}
+.ins.good{border-color:var(--pr)}.ins.warn{border-color:var(--am)}.ins.bad{border-color:var(--rd)}
+.ch{width:100%;height:auto}.ax{font-size:10px;fill:var(--mu)}
+.dn{display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center}.dn ul{list-style:none;padding:0;margin:0;font-size:14px}.dn li{display:flex;gap:8px;align-items:center;margin:3px 0}
+.dtx{fill:var(--mu);font-size:9px}.dv{fill:var(--tx);font-size:13px;font-weight:700}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal div{text-align:center;font-size:13px;border-radius:8px;padding:8px 0;min-height:36px}
+.cal button{border:2px solid transparent;border-radius:8px;min-height:36px;cursor:pointer;background:var(--bg)}.cal button.sel{border-color:var(--tx)}
+.empty{text-align:center;color:var(--mu);padding:24px 8px}
+.tabs button{background:var(--bg);border:0;padding:5px 12px;border-radius:8px;cursor:pointer}.tabs .on{background:var(--pr);color:#fff}
+.badge{background:#fef3c7;color:#92400e;padding:4px 10px;border-radius:99px;font-size:13px}
+dialog{border:0;border-radius:16px;padding:22px;width:min(440px,92vw);background:var(--card);color:var(--tx);box-shadow:0 10px 40px rgba(0,0,0,.3)}dialog::backdrop{background:rgba(0,0,0,.45)}
+#ts{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:9}
+#ts.show{opacity:1;transform:translate(-50%,0)}#ts.err{background:var(--rd);color:#fff}
+@media(max-width:800px){#app{display:block}aside{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;z-index:5;padding:6px;border:0;border-top:1px solid var(--bd);padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}
+.logo{display:none}#nav{display:flex;overflow-x:auto;gap:2px}#nav a{flex-direction:column;gap:0;font-size:11px;padding:6px 10px;white-space:nowrap;margin:0}main{padding:14px 14px 90px}}
+</style></head>
+<body><div id="app">
+<aside><div class="logo">💸 SpendWise</div><nav id="nav"></nav></aside>
+<main><header><h1 id="ttl"></h1><div class="row"><span class="badge" id="demo" hidden>Demo data in use</span><button class="b1" onclick="openTx()">+ Add transaction</button></div></header><div id="pg"></div></main>
+</div><dialog id="dlg"></dialog><div id="ts" role="status"></div>
+<script>
+const CATS={Food:'#f59e0b',Transport:'#3b82f6',Shopping:'#ec4899',Education:'#8b5cf6',Entertainment:'#f97316',Hostel:'#14b8a6',Bills:'#64748b',Health:'#ef4444',Subscriptions:'#6366f1',Other:'#94a3b8',Income:'#059669'};
+const EC=Object.keys(CATS).filter(k=>k!=='Income'),METH=['Cash','UPI','Card','Bank transfer'];
+const NAV=[['dashboard','🏠','Dashboard'],['transactions','💸','Transactions'],['budgets','🎯','Budgets'],['goals','🐷','Savings Goals'],['analytics','📊','Analytics'],['insights','💡','Smart Insights'],['settings','⚙️','Settings']];
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>(n<0?'−':'')+'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN'),pad=n=>String(n).padStart(2,'0');
+const ds=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,NOW=new Date(),TODAY=ds(NOW),dom=NOW.getDate();
+const dim=new Date(NOW.getFullYear(),NOW.getMonth()+1,0).getDate(),left=dim-dom+1;
+const mo=o=>new Date(NOW.getFullYear(),NOW.getMonth()+o,1),mk=o=>ds(mo(o)).slice(0,7),MK=mk(0);
+const fd=d=>new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}),sum=a=>a.reduce((s,t)=>s+t.amt,0);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function seed(){let i=0;const T=(n,a,ty,c,d,m,last)=>({id:'s'+i++,name:n,amt:a,type:ty,cat:c,date:(last?mk(-1):MK)+'-'+pad(last?d:Math.min(d,dom)),method:m,desc:''});
+const tx=[T('Pocket Money',2000,'income','Income',1,'Bank transfer'),T('Scholarship',6000,'income','Income',2,'Bank transfer'),T('Tutoring (part-time)',1500,'income','Income',9,'UPI'),
+T('Lunch',120,'expense','Food',3,'UPI'),T('Tea',45,'expense','Food',4,'Cash'),T('Auto Ride',250,'expense','Transport',5,'Cash'),T('Spotify',499,'expense','Subscriptions',6,'Card'),T('Groceries',800,'expense','Food',8,'UPI'),T('Movie',150,'expense','Entertainment',10,'UPI'),T('College Supplies',350,'expense','Education',11,'Cash'),T('Dinner with friends',380,'expense','Food',13,'UPI'),T('Bus Pass',300,'expense','Transport',14,'Cash'),T('Hoodie',899,'expense','Shopping',16,'Card'),T('Mobile Recharge',299,'expense','Bills',17,'UPI'),T('Pharmacy',180,'expense','Health',18,'Cash'),T('Snacks',90,'expense','Food',19,'UPI'),T('Cab',220,'expense','Transport',20,'UPI'),T('Lunch',140,'expense','Food',21,'UPI'),T('Gaming credits',199,'expense','Entertainment',22,'Card'),T('Tea',40,'expense','Food',23,'Cash'),
+T('Pocket Money',8000,'income','Income',1,'Bank transfer',1),T('Groceries',700,'expense','Food',5,'UPI',1),T('Spotify',499,'expense','Subscriptions',6,'Card',1),T('Mess & meals',600,'expense','Food',9,'Cash',1),T('Auto Rides',350,'expense','Transport',12,'Cash',1),T('Jacket',1200,'expense','Shopping',15,'Card',1),T('Movie',300,'expense','Entertainment',20,'UPI',1),T('Books',500,'expense','Education',22,'Cash',1)];
+const g=(n,t,s,d)=>({id:uid(),name:n,target:t,saved:s,date:ds(new Date(NOW.getTime()+d*864e5))});
+return{tx,demo:true,dark:null,budget:{total:8000,cats:{Food:2500,Transport:1000,Shopping:1000,Entertainment:800,Education:1200,Other:1500}},goals:[g('Buy headphones',3000,1200,45),g('Laptop fund',40000,3000,300),g('Emergency savings',5000,1500,120)]}}
+function load(){try{const s=JSON.parse(localStorage.getItem('spendwise1'));if(s&&s.tx)return s}catch(e){}return seed()}
+let S=load(),view='w',calOff=0,calSel=null,F={q:'',type:'',cat:'',from:'',to:'',sort:'dd'};
+const save=()=>{try{localStorage.setItem('spendwise1',JSON.stringify(S))}catch(e){}};
+function toast(m,t){const e=$('#ts');e.textContent=m;e.className='show '+(t||'');clearTimeout(toast.t);toast.t=setTimeout(()=>e.className='',2600)}
+const ex=()=>S.tx.filter(t=>t.type==='expense'),inM=(a,m)=>a.filter(t=>t.date.startsWith(m));
+const byC=a=>{const o={};a.forEach(t=>o[t.cat]=(o[t.cat]||0)+t.amt);return o};
+function stats(){const i=sum(S.tx.filter(t=>t.type==='income')),e=sum(ex()),saved=S.goals.reduce((s,g)=>s+g.saved,0),me=inM(ex(),MK),spent=sum(me);
+return{bal:i-e-saved,inc:sum(inM(S.tx.filter(t=>t.type==='income'),MK)),spent,rem:S.budget.total-spent,saved,by:byC(me),lastBy:byC(inM(ex(),mk(-1))),last:sum(inM(ex(),mk(-1)))}}
+function insights(){const s=stats(),P=S.budget.total,o=[],pct=P?s.spent/P*100:0;if(!S.tx.length)return[{k:'info',m:'Add a few transactions and personalised insights will appear here.'}];
+const top=Object.entries(s.by).sort((a,b)=>b[1]-a[1])[0];if(top)o.push({k:'info',m:`You spent the most on ${top[0]} this month (${fmt(top[1])}).`});
+if(s.last>0){const c=(s.spent-s.last)/s.last*100;o.push(c>5?{k:'warn',m:`Your expenses are ${Math.round(c)}% higher than last month.`}:c<-5?{k:'good',m:`Great! Your expenses are ${Math.round(-c)}% lower than last month.`}:{k:'info',m:'Your spending is about the same as last month.'})}
+if(P>0){o.push(pct>=100?{k:'bad',m:`You have exceeded your monthly budget by ${fmt(-s.rem)}.`}:pct>=80?{k:'warn',m:`You have used ${Math.round(pct)}% of your monthly budget – almost there!`}:{k:'good',m:`You have used ${Math.round(pct)}% of your monthly budget.`});if(s.rem>0)o.push({k:'info',m:`You have ${fmt(s.rem)} remaining for this month (about ${fmt(s.rem/left)}/day).`})}
+const avg=s.spent/dom,al=P/dim;if(P>0&&s.spent>0)o.push(avg>al?{k:'warn',m:`You are spending ${fmt(avg)}/day, above your budget allowance of ${fmt(al)}/day.`}:{k:'good',m:`Your daily average of ${fmt(avg)} is within your ${fmt(al)}/day allowance.`});
+Object.keys(s.by).forEach(c=>{if(s.lastBy[c]>0&&s.by[c]>s.lastBy[c]*1.2)o.push({k:'warn',m:`Your ${c} expenses are higher than last month (${fmt(s.by[c])} vs ${fmt(s.lastBy[c])}).`})});
+if(s.by.Entertainment>0)o.push({k:'info',m:`You could save ${fmt(Math.round(s.by.Entertainment*.25/10)*10)} by trimming entertainment expenses by 25%.`});
+if(s.inc>0){const r=(s.inc-s.spent)/s.inc*100;o.push(r>=20?{k:'good',m:`You are saving ${Math.round(r)}% of this month’s income – a healthy rate.`}:r<0?{k:'bad',m:'You have spent more than you earned this month.'}:{k:'warn',m:`You are saving only ${Math.round(r)}% of this month’s income. Aim for 20%.`})}
+return o}
+const insH=a=>a.map(i=>`<div class="ins ${i.k}">${esc(i.m)}</div>`).join('');
+function bars(lab,ser){const W=420,H=170,m=22,mx=Math.max(1,...ser.flatMap(s=>s.v)),bw=(W-20)/lab.length,w=Math.min(26,bw*.8/ser.length);let o='';
+lab.forEach((l,i)=>{ser.forEach((s,j)=>{const h=(H-m-14)*s.v[i]/mx;o+=`<rect x="${10+i*bw+(bw-w*ser.length)/2+j*w}" y="${H-m-h}" width="${w-2}" height="${Math.max(h,1)}" rx="3" fill="${s.c}"><title>${l} – ${s.n}: ${fmt(s.v[i])}</title></rect>`});o+=`<text x="${10+i*bw+bw/2}" y="${H-6}" text-anchor="middle" class="ax">${l}</text>`});return`<svg viewBox="0 0 ${W} ${H}" class="ch" role="img" aria-label="Bar chart">${o}</svg>`}
+function donut(by){const t=sum(Object.entries(by).map(([k,v])=>({amt:v})));if(!t)return'<div class="empty">No expenses this month yet.</div>';const R=54,C=2*Math.PI*R;let off=0;const e=Object.entries(by).sort((a,b)=>b[1]-a[1]);
+const arcs=e.map(([k,v])=>{const l=v/t*C,r=`<circle r="${R}" cx="70" cy="70" fill="none" stroke="${CATS[k]}" stroke-width="22" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" style="cursor:pointer" onclick="dc('${k}',${v})" onmouseover="dc('${k}',${v})"><title>${k}: ${fmt(v)}</title></circle>`;off+=l;return r}).join('');
+window.dc=(k,v)=>{$('#dt').textContent=k+' · '+Math.round(v/t*100)+'%';$('#dv').textContent=fmt(v)};
+return`<div class="dn"><svg viewBox="0 0 140 140" width="170" role="img" aria-label="Spending by category">${arcs}<text id="dt" x="70" y="64" text-anchor="middle" class="dtx">Total spent</text><text id="dv" x="70" y="82" text-anchor="middle" class="dv">${fmt(t)}</text></svg><ul>${e.map(([k,v])=>`<li><span class="dot" style="background:${CATS[k]}"></span>${k} <b>${fmt(v)}</b></li>`).join('')}</ul></div>`}
+const rowT=(t,act)=>`<div class="tr"><span class="dot" style="background:${CATS[t.cat]||'#999'}"></span><div class="n"><b>${esc(t.name)}</b><span class="mu">${t.cat} · ${t.method} · ${fd(t.date)}</span></div><b class="${t.type==='income'?'g':'r'}">${t.type==='income'?'+':'−'}${fmt(t.amt)}</b>${act?`<button class="b2 sm" onclick="openTx('${t.id}')" aria-label="Edit">✏️</button><button class="b2 sm dl" onclick="delTx('${t.id}')" aria-label="Delete">🗑️</button>`:''}</div>`;
+function chartData(){if(view==='w'){const d=[...Array(7)].map((_,i)=>{const x=new Date(NOW);x.setDate(x.getDate()-6+i);return x});return{l:d.map(x=>x.toLocaleDateString('en-IN',{weekday:'short'})),v:d.map(x=>sum(ex().filter(t=>t.date===ds(x))))}}
+const m=[-5,-4,-3,-2,-1,0];return{l:m.map(o=>mo(o).toLocaleDateString('en-IN',{month:'short'})),v:m.map(o=>sum(inM(ex(),mk(o))))}}
+const card=(l,v,sub,c='')=>`<div class="card"><div class="mu">${l}</div><div class="big ${c}">${v}</div><div class="mu">${sub}</div></div>`;
+function dash(){const s=stats(),cd=chartData(),rec=[...S.tx].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+return`<div class="grid g5">${card('💰 Total balance',fmt(s.bal),'Income − expenses − savings',s.bal<0?'r':'')}${card('⬇️ Income',fmt(s.inc),'This month','g')}${card('⬆️ Expenses',fmt(s.spent),'This month','r')}${card('🎯 Budget left',fmt(s.rem),`of ${fmt(S.budget.total)} monthly`,s.rem<0?'r':'')}${card('🐷 Savings',fmt(s.saved),S.goals.length+' goal(s)','g')}</div>
+<div class="grid g2"><div class="card"><div class="row sp"><h2>Spending overview</h2><div class="tabs row"><button class="${view==='w'?'on':''}" onclick="view='w';render()">Weekly</button><button class="${view==='m'?'on':''}" onclick="view='m';render()">Monthly</button></div></div>${bars(cd.l,[{v:cd.v,c:'#dc2626',n:'Spent'}])}</div><div class="card"><h2>Category breakdown</h2>${donut(s.by)}</div></div>
+<div class="grid g2"><div class="card"><div class="row sp"><h2>Recent transactions</h2><a href="#transactions" class="g">View all</a></div>${rec.length?rec.map(t=>rowT(t)).join(''):'<div class="empty">No transactions yet. Add your first one!</div>'}</div><div class="card"><div class="row sp"><h2>Financial insights</h2><a href="#insights" class="g">More</a></div>${insH(insights().slice(0,5))}</div></div>`}
+function tl(){let a=S.tx.filter(t=>(!F.q||(t.name+t.desc).toLowerCase().includes(F.q.toLowerCase()))&&(!F.type||t.type===F.type)&&(!F.cat||t.cat===F.cat)&&(!F.from||t.date>=F.from)&&(!F.to||t.date<=F.to));
+a.sort({dd:(x,y)=>y.date.localeCompare(x.date),da:(x,y)=>x.date.localeCompare(y.date),ad:(x,y)=>y.amt-x.amt,aa:(x,y)=>x.amt-y.amt}[F.sort]);
+$('#tl').innerHTML=a.length?`<div class="mu">${a.length} transaction(s)</div>`+a.map(t=>rowT(t,1)).join(''):`<div class="empty">${S.tx.length?'No transactions match your filters.':'No transactions yet. Click “Add transaction” to start.'}</div>`}
+const opt=(a,v)=>a.map(x=>`<option value="${x[0]}"${x[0]===v?' selected':''}>${x[1]}</option>`).join('');
+function transactions(){return`<div class="card" style="margin-bottom:14px"><div class="filt"><label>Search<input value="${esc(F.q)}" placeholder="Search…" oninput="F.q=this.value;tl()"></label>
+<label>Type<select onchange="F.type=this.value;tl()">${opt([['','All'],['income','Income'],['expense','Expense']],F.type)}</select></label>
+<label>Category<select onchange="F.cat=this.value;tl()">${opt([['','All'],...Object.keys(CATS).map(k=>[k,k])],F.cat)}</select></label>
+<label>From<input type="date" value="${F.from}" onchange="F.from=this.value;tl()"></label><label>To<input type="date" value="${F.to}" onchange="F.to=this.value;tl()"></label>
+<label>Sort<select onchange="F.sort=this.value;tl()">${opt([['dd','Newest first'],['da','Oldest first'],['ad','Amount high–low'],['aa','Amount low–high']],F.sort)}</select></label></div>
+<button class="b2 sm" onclick="F={q:'',type:'',cat:'',from:'',to:'',sort:'dd'};render()">Clear filters</button></div><div class="card" id="tl"></div>`}
+function budgets(){const s=stats(),P=S.budget.total,p=P?s.spent/P*100:0,cl=p>=100?'bad':p>=80?'warn':'ok',lab=p>=100?'Over budget':p>=80?'Approaching limit':'Within budget';
+const lim=Object.entries(S.budget.cats).filter(([k,v])=>v>0);const un=sum(Object.entries(s.by).filter(([k])=>!(S.budget.cats[k]>0)).map(([k,v])=>({amt:v})));
+return`<div class="card" style="margin-bottom:14px"><div class="row sp"><h2>Monthly budget</h2><button class="b1 sm" onclick="editBudget()">Edit budget</button></div><div class="big">${fmt(P)}</div><div class="bar ${cl}"><i style="width:${Math.min(p,100)}%"></i></div>
+<div class="row sp mu"><span>Spent ${fmt(s.spent)} (${Math.round(p)}%) · <b>${lab}</b></span><span>Remaining ${fmt(s.rem)}</span></div></div>
+<div class="grid g2">${lim.map(([k,v])=>{const sp=s.by[k]||0,q=sp/v*100,c=q>=100?'bad':q>=80?'warn':'ok';return`<div class="card"><div class="row sp"><b><span class="dot" style="background:${CATS[k]};display:inline-block"></span> ${k}</b><span class="mu">${q>=100?'Over budget':q>=80?'Near limit':'On track'}</span></div><div class="bar ${c}"><i style="width:${Math.min(q,100)}%"></i></div><div class="row sp mu"><span>${fmt(sp)} of ${fmt(v)} (${Math.round(q)}%)</span><span>${fmt(v-sp)} left</span></div></div>`}).join('')||'<div class="empty card">No category limits set.</div>'}</div>
+${un>0?`<p class="mu">Spending in categories without a limit this month: ${fmt(un)}</p>`:''}`}
+function editBudget(){modal('Edit monthly budget',fld('Total monthly budget (₹)','total',S.budget.total,'min=0 step=1 required','number')+'<div class="mu">Category limits (₹, 0 = none)</div>'+EC.map(c=>fld(c,'c_'+c,S.budget.cats[c]||0,'min=0 step=1','number')).join(''),f=>{const t=+f.get('total'),c={};let ss=0;EC.forEach(k=>{const v=+f.get('c_'+k)||0;if(v<0)return;if(v>0){c[k]=v;ss+=v}});
+if(!(t>=0))return toast('Enter a valid budget','err'),false;if(ss>t)return toast(`Category limits (${fmt(ss)}) exceed the total budget`,'err'),false;S.budget={total:t,cats:c};save();toast('Budget updated');render()})}
+function goals(){return`<div class="row sp" style="margin-bottom:14px"><span class="mu">Available balance: <b>${fmt(stats().bal)}</b></span><button class="b1" onclick="newGoal()">+ New goal</button></div><div class="grid g2">${S.goals.map(g=>{const p=Math.min(100,g.saved/g.target*100),dl=Math.ceil((new Date(g.date+'T00:00')-new Date(TODAY+'T00:00'))/864e5);
+return`<div class="card"><div class="row sp"><h2>${esc(g.name)}</h2><button class="b2 sm dl" onclick="delGoal('${g.id}')" aria-label="Delete goal">🗑️</button></div><div class="big g">${Math.round(p)}%</div><div class="bar ok"><i style="width:${p}%"></i></div><div class="mu">${fmt(g.saved)} of ${fmt(g.target)} · Target ${fd(g.date)} (${dl>=0?dl+' days left':'date passed'})</div>${g.saved<g.target&&dl>0?`<div class="mu">Save about ${fmt((g.target-g.saved)/Math.max(dl/30,1))}/month to reach it.</div>`:''}
+<div style="margin-top:10px">${g.saved>=g.target?'<b class="g">🎉 Goal reached!</b>':`<button class="b1 sm" onclick="addSav('${g.id}')">+ Add savings</button>`}</div></div>`}).join('')||'<div class="empty card">No savings goals yet. Create one to start saving!</div>'}</div>`}
+function newGoal(){modal('New savings goal',fld('Goal name','name','','required maxlength=40')+fld('Target amount (₹)','t','','min=1 step=1 required','number')+fld('Already saved (₹)','s',0,'min=0 step=1','number')+fld('Target date','d',ds(new Date(NOW.getTime()+90*864e5)),'required','date'),f=>{const n=f.get('name').trim(),t=+f.get('t'),s=+f.get('s')||0;
+if(!n||!(t>0)||s<0||s>t)return toast('Enter a name, a target above 0, and savings not above the target','err'),false;if(s>stats().bal)return toast('Not enough balance for that starting amount','err'),false;S.goals.push({id:uid(),name:n,target:t,saved:s,date:f.get('d')});save();toast('Goal created');render()})}
+function addSav(id){const g=S.goals.find(x=>x.id===id),b=stats().bal;modal('Add savings to “'+esc(g.name)+'”',`<p class="mu">Available balance: ${fmt(b)} · Still needed: ${fmt(g.target-g.saved)}</p>`+fld('Amount (₹)','a','','min=1 step=1 required','number'),f=>{const a=+f.get('a');
+if(!(a>0))return toast('Enter an amount above 0','err'),false;if(a>b)return toast('That is more than your available balance','err'),false;if(a>g.target-g.saved)return toast('That exceeds what the goal needs','err'),false;g.saved+=a;save();toast('Savings added!');render()})}
+function delGoal(id){if(confirm('Delete this goal? Its saved amount returns to your balance.')){S.goals=S.goals.filter(g=>g.id!==id);save();toast('Goal deleted');render()}}
+function calH(){const y=mo(calOff).getFullYear(),m=mo(calOff).getMonth(),first=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate(),key=mk(calOff);const day={};inM(ex(),key).forEach(t=>day[t.date]=(day[t.date]||0)+t.amt);const mx=Math.max(1,...Object.values(day));
+let c=['S','M','T','W','T','F','S'].map(d=>`<div class="mu">${d}</div>`).join('')+'<div></div>'.repeat(first);
+for(let d=1;d<=n;d++){const k=key+'-'+pad(d),v=day[k]||0;c+=`<button class="${calSel===k?'sel':''}" style="${v?`background:rgba(5,150,105,${.18+.72*v/mx});color:${v/mx>.5?'#fff':'inherit'}`:''}" title="${fmt(v)}" onclick="calSel='${k}';render()">${d}</button>`}
+const ts=calSel&&calSel.startsWith(key)?S.tx.filter(t=>t.date===calSel):null;
+return`<div class="row sp"><h2>Spending calendar</h2><div class="row"><button class="b2 sm" onclick="calOff--;calSel=null;render()" aria-label="Previous month">‹</button><b>${mo(calOff).toLocaleDateString('en-IN',{month:'long',year:'numeric'})}</b><button class="b2 sm" onclick="calOff++;calSel=null;render()" aria-label="Next month">›</button></div></div><div class="cal">${c}</div><p class="mu">Darker green = higher spending. Tap a day for details.</p>
+${ts?`<h3>${fd(calSel)}</h3>${ts.length?ts.map(t=>rowT(t)).join(''):'<div class="empty">No transactions on this day.</div>'}`:''}`}
+function analytics(){const s=stats(),m=[-5,-4,-3,-2,-1,0],pm={};inM(ex(),MK).forEach(t=>pm[t.method]=(pm[t.method]||0)+t.amt);const tot=sum(Object.values(pm).map(v=>({amt:v})))||1;
+return`<div class="grid g2"><div class="card"><h2>Income vs expenses (6 months)</h2>${bars(m.map(o=>mo(o).toLocaleDateString('en-IN',{month:'short'})),[{n:'Income',c:'#059669',v:m.map(o=>sum(inM(S.tx.filter(t=>t.type==='income'),mk(o))))},{n:'Expenses',c:'#dc2626',v:m.map(o=>sum(inM(ex(),mk(o))))}])}<div class="mu"><span class="g">■</span> Income <span class="r">■</span> Expenses</div></div>
+<div class="card"><h2>Category breakdown</h2>${donut(s.by)}</div></div>
+<div class="grid g2"><div class="card">${calH()}</div><div class="card"><h2>Payment methods (this month)</h2>${Object.keys(pm).length?METH.filter(k=>pm[k]).map(k=>`<div class="row sp"><span>${k}</span><b>${fmt(pm[k])}</b></div><div class="bar ok"><i style="width:${pm[k]/tot*100}%"></i></div>`).join(''):'<div class="empty">No expenses this month yet.</div>'}</div></div>`}
+function insightsPg(){return`<div class="grid g2"><div class="card"><h2>💡 Smart insights</h2>${insH(insights())}<p class="mu">Generated from your data using simple rules – no external AI needed.</p></div>
+<div class="card"><h2>🤔 Can I afford this?</h2><label>Item price (₹)<input id="pr" type="number" min="1" step="1" placeholder="e.g. 1500" onkeydown="if(event.key==='Enter')afford()"></label><button class="b1" onclick="afford()">Check</button><div id="ar" style="margin-top:14px"></div></div></div>`}
+function afford(){const p=+$('#pr').value;if(!(p>0)){toast('Enter a price above 0','err');return}
+const s=stats(),after=s.rem-p,avg=s.spent/dom,pd=after/left,g=S.goals.filter(g=>g.saved<g.target).sort((a,b)=>a.date.localeCompare(b.date))[0],w=[];let k,v;
+if(p>s.bal){k='bad';v='Not recommended right now';w.push(`It costs more than your available balance of ${fmt(s.bal)}.`)}else if(after<0){k='bad';v='Not recommended right now';w.push(`It would push you ${fmt(-after)} over your monthly budget.`)}
+else if(p>.5*s.rem||p>.4*s.bal||pd<avg*.6){k='warn';v='Affordable, but be careful';w.push('You can pay for it, but it uses a big share of what is left.')}else{k='good';v='Affordable';w.push('It fits comfortably within your balance and budget.')}
+w.push(`After buying, ${fmt(Math.max(after,0))} of budget remains for ${left} day(s) – about ${fmt(Math.max(pd,0))}/day versus your current ${fmt(avg)}/day.`);
+if(g)w.push(`Your goal “${g.name}” still needs ${fmt(g.target-g.saved)}; this item equals ${Math.round(p/(g.target-g.saved)*100)}% of that gap.`);
+$('#ar').innerHTML=`<div class="ins ${k}"><b>${v}</b></div>`+w.map(x=>`<p class="mu" style="margin:6px 0">${esc(x)}</p>`).join('')}
+function settings(){return`<div class="card" style="max-width:560px"><h2>Appearance</h2><label class="row" style="color:var(--tx)"><input type="checkbox" style="width:auto" ${document.documentElement.dataset.theme==='dark'||(S.dark===null&&matchMedia('(prefers-color-scheme:dark)').matches)?'checked':''} onchange="S.dark=this.checked;save();render()"> Dark mode</label>
+<h2>Data</h2><p class="mu">${S.demo?'You are currently using demo/sample data.':'You are using your own data.'} Everything is stored in this browser (LocalStorage).</p><div class="row"><button class="b2" onclick="resetDemo()">Reset to sample data</button><button class="b2 dl" onclick="clearAll()">Clear all &amp; start fresh</button></div></div>`}
+function resetDemo(){if(confirm('Replace all data with the sample data?')){const d=S.dark;S=seed();S.dark=d;save();toast('Sample data restored');render()}}
+function clearAll(){if(confirm('Delete everything and start fresh?')){S={tx:[],demo:false,dark:S.dark,budget:{total:0,cats:{}},goals:[]};save();toast('Fresh start – all data cleared');render()}}
+function fld(l,n,v='',a='',t='text'){return`<label>${l}<input name="${n}" type="${t}" value="${esc(v)}" ${a}></label>`}
+const sel=(l,n,o,v)=>`<label>${l}<select name="${n}">${o.map(x=>`<option${x===v?' selected':''}>${x}</option>`).join('')}</select></label>`;
+function modal(t,h,cb){const d=$('#dlg');d.innerHTML=`<h3>${t}</h3><form>${h}<div class="row" style="justify-content:flex-end"><button type="button" class="b2" onclick="$('#dlg').close()">Cancel</button><button class="b1">Save</button></div></form>`;
+d.querySelector('form').onsubmit=e=>{e.preventDefault();if(cb(new FormData(e.target))!==false)d.close()};d.showModal()}
+function openTx(id){const t=S.tx.find(x=>x.id===id)||{type:'expense',cat:'Food',date:TODAY,method:'UPI',name:'',amt:'',desc:''};
+modal(id?'Edit transaction':'Add transaction',fld('Name','name',t.name,'required maxlength=60')+fld('Amount (₹)','amt',t.amt,'min=0.01 step=0.01 required','number')+sel('Type','type',['expense','income'],t.type)+sel('Category (expenses)','cat',EC,t.cat)+fld('Date','date',t.date,'required','date')+sel('Payment method','method',METH,t.method)+`<label>Description (optional)<textarea name="desc" rows="2" maxlength="150">${esc(t.desc)}</textarea></label>`,f=>{
+const name=f.get('name').trim(),amt=+f.get('amt'),date=f.get('date'),type=f.get('type');
+if(!name)return toast('Please enter a name','err'),false;if(!(amt>0)||amt>1e7)return toast('Amount must be above 0','err'),false;if(!date)return toast('Please pick a date','err'),false;
+const o={name,amt,type,cat:type==='income'?'Income':f.get('cat'),date,method:f.get('method'),desc:f.get('desc').trim()};
+if(t.id)Object.assign(t,o);else S.tx.push({id:uid(),...o});save();toast(t.id?'Transaction updated':'Transaction added');render()})}
+function delTx(id){if(confirm('Delete this transaction?')){S.tx=S.tx.filter(t=>t.id!==id);save();toast('Transaction deleted');render()}}
+const PG={dashboard:['Dashboard',dash],transactions:['Transactions',transactions],budgets:['Monthly Budget',budgets],goals:['Savings Goals',goals],analytics:['Analytics',analytics],insights:['Smart Insights',insightsPg],settings:['Settings',settings]};
+function render(){const h=(location.hash||'#dashboard').slice(1),p=PG[h]?h:'dashboard';document.documentElement.dataset.theme=S.dark===true?'dark':S.dark===false?'light':'';
+$('#nav').innerHTML=NAV.map(([k,i,l])=>`<a href="#${k}" class="${k===p?'on':''}"><span>${i}</span>${l}</a>`).join('');$('#ttl').textContent=PG[p][0];$('#demo').hidden=!S.demo;$('#pg').innerHTML=PG[p][1]();if(p==='transactions')tl()}
+addEventListener('hashchange',()=>{window.scrollTo(0,0);render()});render();
+</script></body></html>
