@@ -20,5 +20,4 @@ Analytics (6-month chart, payment methods, spending calendar), Smart Insights (r
 6. Add a savings goal and add savings. 7. Use "Can I afford this?" in Smart Insights.
 8. Resize to mobile width. 9. Settings -> Clear all / Reset sample data.
 
-## Prompt Book
-Add your own real prompts and results here (do not fabricate).
+
